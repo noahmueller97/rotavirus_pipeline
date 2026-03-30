@@ -1,0 +1,20 @@
+species: ["A"]
+segments: ["vp4", "vp7"]
+
+minfrac_by_segment:
+  vp4: 0.8
+  vp7: 0.85
+default_minfrac: 0.8
+
+subsample_total: 1000
+threads: 4
+
+drop_missing_year: true
+year_col: "year_group"
+
+auspice_config: "config/auspice_rotavirus.json"
+
+min_coverage: 0.0
+max_n_frac: 1.0
+clock_rate: "1e-3"
+clock_std_dev: "4e-4"

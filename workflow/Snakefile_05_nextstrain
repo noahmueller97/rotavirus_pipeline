@@ -1,0 +1,128 @@
+# ------------------------------------------------------------
+# Rotavirus analysis pipeline – Phase 5: Phylogenetic analysis
+# ------------------------------------------------------------
+#
+# This stage reconstructs phylogenetic trees for each species
+# and genome segment using the Nextstrain / Augur toolkit.
+#
+# The workflow automatically discovers available datasets from
+# the filtered directory and keeps only those with a sufficient
+# number of sequences for meaningful phylogenetic analysis.
+#
+# For each species/segment dataset the following steps are run:
+#
+# 1. Align sequences using augur align
+# 2. Infer a phylogenetic tree using augur tree
+# 3. Refine the tree and integrate metadata using augur refine
+# 4. Export a Nextstrain-compatible JSON dataset for visualization
+#
+# Final outputs are written to:
+#   results/03_nextstrain/05_auspice/
+#
+# These JSON files can be visualized using the Auspice interface
+# to explore phylogenetic relationships across rotavirus strains,
+# hosts, and geographic regions.
+# ------------------------------------------------------------
+
+from pathlib import Path
+from Bio import SeqIO
+
+IN_ROOT  = Path("results/03_nextstrain/01_filtered")
+OUT_ROOT = "results/03_nextstrain"
+AUSPICE_CFG = "config/auspice_rotavirus.json"
+
+MIN_SEQS = 10
+
+pairs = []
+
+for fasta in IN_ROOT.glob("*/*/sequences.fasta"):
+    n = sum(1 for _ in SeqIO.parse(fasta, "fasta"))
+    if n >= MIN_SEQS:
+        species = fasta.parent.parent.name
+        segment = fasta.parent.name
+        pairs.append((species, segment))
+
+SPECIES = [p[0] for p in pairs]
+SEGMENT = [p[1] for p in pairs]
+
+print(f"Datasets kept for analysis: {len(pairs)}")
+
+
+rule all:
+    input:
+        [f"{OUT_ROOT}/05_auspice/{s}/{seg}/auspice.json" for s, seg in pairs]
+
+rule align:
+    input:
+        fasta = f"{OUT_ROOT}/02_subsampled/{{species}}/{{segment}}/sequences.fasta",
+    output:
+        aln = f"{OUT_ROOT}/03_aligned/{{species}}/{{segment}}/aligned.fasta",
+    threads: 4
+    shell:
+        r"""
+        set -euo pipefail
+        mkdir -p $(dirname {output.aln})
+        augur align \
+          --sequences {input.fasta} \
+          --output {output.aln} \
+          --nthreads {threads} \
+          --fill-gaps
+        """
+
+rule tree:
+    input:
+        aln = f"{OUT_ROOT}/03_aligned/{{species}}/{{segment}}/aligned.fasta",
+    output:
+        tree = f"{OUT_ROOT}/04_tree/{{species}}/{{segment}}/tree.nwk",
+    threads: 4
+    shell:
+        r"""
+        set -euo pipefail
+        mkdir -p $(dirname {output.tree})
+        augur tree \
+          --alignment {input.aln} \
+          --output {output.tree} \
+          --nthreads {threads}
+        """
+
+rule refine:
+    input:
+        tree = f"{OUT_ROOT}/04_tree/{{species}}/{{segment}}/tree.nwk",
+        aln  = f"{OUT_ROOT}/03_aligned/{{species}}/{{segment}}/aligned.fasta",
+        meta = f"{IN_ROOT}/{{species}}/{{segment}}/metadata.tsv",
+    output:
+        tree_ref = f"{OUT_ROOT}/04_tree/{{species}}/{{segment}}/tree.refined.nwk",
+        node_data= f"{OUT_ROOT}/04_tree/{{species}}/{{segment}}/node_data.json",
+    shell:
+        r"""
+        set -euo pipefail
+        mkdir -p $(dirname {output.tree_ref})
+        augur refine \
+        --tree {input.tree} \
+        --alignment {input.aln} \
+        --metadata {input.meta} \
+        --output-tree {output.tree_ref} \
+        --output-node-data {output.node_data} \
+        --root mid_point \
+        --date-inference marginal
+        """
+
+rule export:
+    input:
+        tree = f"{OUT_ROOT}/04_tree/{{species}}/{{segment}}/tree.refined.nwk",
+        meta = f"{IN_ROOT}/{{species}}/{{segment}}/metadata.tsv",
+        node = f"{OUT_ROOT}/04_tree/{{species}}/{{segment}}/node_data.json",
+    output:
+        json = f"{OUT_ROOT}/05_auspice/{{species}}/{{segment}}/auspice.json",
+    shell:
+        r"""
+        set -euo pipefail
+        mkdir -p $(dirname {output.json})
+       augur export v2 \
+            --tree {input.tree} \
+            --metadata {input.meta} \
+            --metadata-columns date region country host species segment \
+            --node-data {input.node} \
+            --output {output.json} \
+            --auspice-config {AUSPICE_CFG}
+        """

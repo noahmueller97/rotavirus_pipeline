@@ -1,0 +1,16 @@
+{
+  "title": "Rotavirus",
+  "panels": ["tree"],
+
+  "filters": ["region", "country", "host", "species", "segment"],
+
+  "colorings": [
+    { "key": "region", "title": "Region", "type": "categorical" },
+    { "key": "country", "title": "Country", "type": "categorical" },
+    { "key": "host", "title": "Host", "type": "categorical" },
+    { "key": "species", "title": "Species", "type": "categorical" },
+    { "key": "segment", "title": "Segment", "type": "categorical" },
+
+    { "key": "date", "title": "Sampling date", "type": "continuous" }
+  ]
+}

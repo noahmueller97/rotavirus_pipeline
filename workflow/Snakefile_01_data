@@ -1,0 +1,299 @@
+# ------------------------------------------------------------
+# Rotavirus analysis pipeline – Phase 1: Data acquisition
+# ------------------------------------------------------------
+#
+# This Snakefile performs the initial data preparation for the
+# rotavirus phylogenetic analysis pipeline.
+#
+# The workflow downloads rotavirus genome sequences from NCBI,
+# extracts the genomic FASTA and associated metadata, and builds
+# a unified NDJSON dataset compatible with Nextstrain.
+#
+# The sequences are then aligned against a curated set of
+# reference rotavirus proteins using DIAMOND in order to identify
+# genome segments. Based on these annotations, the pipeline
+# constructs per-species / per-segment datasets that are used in
+# later stages of the analysis.
+#
+# Outputs produced in this stage include:
+#   - DIAMOND alignment results
+#   - annotated NDJSON sequence dataset
+#   - basic segment statistics
+#   - per-species / per-segment FASTA datasets
+#
+# Snakefiles_02–05 use these datasets for
+# reference expansion, filtering, and phylogenetic reconstruction.
+# ------------------------------------------------------------
+
+
+ROTAVIRUS_TAXON = 10912
+configfile: "config/reference_genomes.yml"
+
+PATCH = config.get("patch_segments", False)
+
+FINAL_NDJSON = (
+    "results/annotated_genbank.patched.ndjson"
+    if PATCH
+    else "results/annotated_genbank.ndjson"
+)
+
+rule all:
+    input:
+        "results/02_datasets/.done",
+        "results/00_primary/segment_comparison.tsv",
+
+
+# Download NCBI dataset
+rule fetch_ncbi_dataset_package:
+    output:
+        dataset_package="data/ncbi_dataset.zip"
+    params:
+        taxon=ROTAVIRUS_TAXON
+    shell:
+        r"""
+        set -euo pipefail
+        mkdir -p data
+        tmp="{output.dataset_package}.tmp"
+        rm -f "$tmp" "{output.dataset_package}"
+
+        for i in 1 2 3 4 5; do
+          echo "[datasets] attempt $i/5"
+          if datasets download virus genome taxon {params.taxon} \
+              --no-progressbar \
+              --include "genome,biosample" \
+              --filename "$tmp"; then
+            break
+          fi
+          echo "[datasets] failed attempt $i, sleeping..."
+          sleep 5
+        done
+
+        test -s "$tmp"
+        mv "$tmp" "{output.dataset_package}"
+        """
+
+
+# Extract sequences
+rule extract_ncbi_dataset_sequences:
+    input:
+        dataset_package="data/ncbi_dataset.zip"
+    output:
+        ncbi_dataset_sequences="data/ncbi_dataset_sequences.fasta"
+    shell:
+        r"""
+        set -euo pipefail
+        unzip -jp {input.dataset_package} ncbi_dataset/data/genomic.fna > {output.ncbi_dataset_sequences}
+        test -s {output.ncbi_dataset_sequences}
+        """
+
+
+# Metadata TSV from the package
+def _get_ncbi_dataset_field_mnemonics(_):
+    fields = [
+        "accession",
+        "sourcedb",
+        "sra-accs",
+        "isolate-lineage",
+        "geo-region",
+        "geo-location",
+        "isolate-collection-date",
+        "release-date",
+        "update-date",
+        "length",
+        "segment",
+        "host-name",
+        "host-tax-id",
+        "virus-infraspecific-strain",
+        "isolate-lineage-source",
+        "biosample-acc",
+        "submitter-names",
+        "submitter-affiliation",
+        "submitter-country",
+    ]
+    return ",".join(fields)
+
+
+rule format_ncbi_dataset_report:
+    input:
+        dataset_package="data/ncbi_dataset.zip"
+    output:
+        ncbi_dataset_tsv="data/ncbi_dataset_report.tsv"
+    params:
+        fields_to_include=_get_ncbi_dataset_field_mnemonics
+    shell:
+        r"""
+        set -euo pipefail
+        dataformat tsv virus-genome \
+            --package {input.dataset_package} \
+            --fields {params.fields_to_include} \
+            > {output.ncbi_dataset_tsv}
+        test -s {output.ncbi_dataset_tsv}
+        """
+
+
+# Create genbank.ndjson
+rule create_genbank_ndjson:
+    input:
+        ncbi_dataset_sequences="data/ncbi_dataset_sequences.fasta",
+        ncbi_dataset_tsv="data/ncbi_dataset_report.tsv"
+    output:
+        ndjson="data/genbank.ndjson"
+    log:
+        "logs/create_genbank_ndjson.txt"
+    shell:
+        r"""
+        set -euo pipefail
+        mkdir -p logs
+
+        augur curate passthru \
+            --metadata {input.ncbi_dataset_tsv} \
+            --fasta {input.ncbi_dataset_sequences} \
+            --seq-id-column Accession \
+            --seq-field sequence \
+            --unmatched-reporting warn \
+            --duplicate-reporting warn \
+            2> {log} > {output.ndjson}
+
+        test -s {output.ndjson}
+        """
+
+
+# Fetch reference proteins
+rule fetch_references:
+    input:
+        config="config/reference_genomes.yml"
+    output:
+        reference_proteins="data/reference_proteins.fasta"
+    log:
+        "logs/fetch_references.txt"
+    shell:
+        r"""
+        set -euo pipefail
+        mkdir -p logs data
+
+        python scripts/01_annotation/fetch_reference_genomes.py \
+            --references {input.config} \
+            > {log} 2>&1
+
+        test -s {output.reference_proteins}
+        """
+
+
+
+# Diamond DB
+rule make_diamond_db:
+    input:
+        reference_fasta="data/reference_proteins.fasta"
+    output:
+        diamond_db="data/diamond.dmnd"
+    shell:
+        r"""
+        set -euo pipefail
+        mkdir -p data
+        diamond makedb --in {input.reference_fasta} -d {output.diamond_db}
+        test -s {output.diamond_db}
+        """
+
+
+
+# Diamond align
+rule diamond_align:
+    input:
+        query_fasta="data/ncbi_dataset_sequences.fasta",
+        diamond_db="data/diamond.dmnd"
+    output:
+        diamond_tsv="results/00_primary/diamond_alignments.tsv"
+    threads: 4
+    shell:
+        r"""
+        set -euo pipefail
+        mkdir -p results/00_primary
+
+        diamond blastx \
+            --query {input.query_fasta} \
+            --threads {threads} \
+            --max-target-seqs 1 \
+            --db {input.diamond_db} \
+            --out {output.diamond_tsv} \
+            --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore
+
+        test -s {output.diamond_tsv}
+        """
+
+
+
+# Annotate sequences
+rule annotate_sequences:
+    input:
+        ndjson="data/genbank.ndjson",
+        diamond_tsv="results/00_primary/diamond_alignments.tsv"
+    output:
+        annotated_ndjson="results/annotated_genbank.ndjson"
+    params:
+        pident_threshold=70.0
+    shell:
+        r"""
+        set -euo pipefail
+        mkdir -p results
+
+        python scripts/01_annotation/annotate_sequences.py \
+            --ndjson {input.ndjson} \
+            --diamond-tsv {input.diamond_tsv} \
+            --pident-threshold {params.pident_threshold} \
+            --output {output.annotated_ndjson}
+
+        test -s {output.annotated_ndjson}
+        """
+
+
+# Optional patch step
+rule patch_segments:
+    input:
+        ndjson="results/annotated_genbank.ndjson"
+    output:
+        ndjson="results/annotated_genbank.patched.ndjson"
+    shell:
+        r"""
+        set -euo pipefail
+        python scripts/05_depricated/patch_segments.py \
+          --in-ndjson {input.ndjson} \
+          --out-ndjson {output.ndjson}
+        test -s {output.ndjson}
+        """
+
+
+# Build datasets
+rule build_all_segments:
+    input:
+        ndjson=FINAL_NDJSON,
+        diamond="results/00_primary/diamond_alignments.tsv"
+    output:
+        done="results/02_datasets/.done"
+    shell:
+        r"""
+        set -euo pipefail
+        mkdir -p results/00_primary results/02_datasets
+
+        # build_all_segments.py expects:
+        #   results/00_primary/annotated_genbank.ndjson
+        #   results/00_primary/diamond_alignments.tsv
+        cp -f {input.ndjson} results/00_primary/annotated_genbank.ndjson
+
+        python scripts/03_dataset_building/build_all_segments.py
+
+        touch {output.done}
+        """
+
+rule basic_stats:
+    input:
+        ndjson=FINAL_NDJSON
+    output:
+        "results/00_primary/segment_comparison.tsv"
+    shell:
+        r"""
+        set -euo pipefail
+        python scripts/01_annotation/basic_stats.py \
+          --infile {input.ndjson} \
+          --outfile {output}
+        test -s {output}
+        """

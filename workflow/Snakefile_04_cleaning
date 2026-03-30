@@ -1,0 +1,94 @@
+# ------------------------------------------------------------
+# Rotavirus analysis pipeline – Phase 4: Dataset subsampling
+# ------------------------------------------------------------
+#
+# This stage prepares the filtered datasets for phylogenetic
+# analysis by subsampling sequences from each species/segment
+# dataset.
+#
+# The workflow first discovers all available datasets in the
+# filtered directory (01_filtered). For each dataset, it verifies
+# that both sequence and metadata files exist. These datasets are
+# then processed individually.
+#
+# The subsampling step reduces very large datasets to a manageable
+# number of sequences while preserving temporal diversity when
+# possible. The script also performs basic cleaning of metadata
+# fields required for downstream phylogenetic analysis.
+#
+# Output datasets are written to:
+#   results/03_nextstrain/02_subsampled/
+#
+# These subsampled datasets are used in the final stage of the
+# pipeline to build sequence alignments and phylogenetic trees.
+# ------------------------------------------------------------
+
+from pathlib import Path
+
+IN_ROOT  = Path("results/03_nextstrain/01_filtered")
+OUT_ROOT = Path("results/03_nextstrain/02_subsampled")
+
+# discover existing datasets by checking BOTH files exist
+pairs = []
+for fasta in IN_ROOT.glob("*/*/sequences.fasta"):
+    meta = fasta.with_name("metadata.tsv")
+    if fasta.is_file() and meta.is_file():
+        species = fasta.parent.parent.name
+        segment = fasta.parent.name
+        pairs.append((species, segment))
+
+SPECIES = [s for s, _ in pairs]
+SEGMENT = [g for _, g in pairs]
+
+
+SUBSAMPLE = 2000
+YEAR_COL = "year_group"
+SEED = 1
+PER_YEAR = False          # True -> adds --subsample-per-year
+DROP_MISSING_YEAR = False # True -> adds --drop-missing-year
+
+
+rule all:
+    input:
+        expand(
+            str(OUT_ROOT / "{species}/{segment}/sequences.fasta"),
+            zip,
+            species=SPECIES,
+            segment=SEGMENT
+        ),
+        expand(
+            str(OUT_ROOT / "{species}/{segment}/metadata.tsv"),
+            zip,
+            species=SPECIES,
+            segment=SEGMENT
+        )
+
+
+rule subsample_and_clean:
+    input:
+        fasta = "results/03_nextstrain/01_filtered/{species}/{segment}/sequences.fasta",
+        meta  = "results/03_nextstrain/01_filtered/{species}/{segment}/metadata.tsv",
+    output:
+        fasta = "results/03_nextstrain/02_subsampled/{species}/{segment}/sequences.fasta",
+        meta  = "results/03_nextstrain/02_subsampled/{species}/{segment}/metadata.tsv",
+    params:
+        subsample = SUBSAMPLE,
+        year_col  = YEAR_COL,
+        seed      = SEED,
+        per_year_flag = "--subsample-per-year" if PER_YEAR else "",
+        drop_year_flag = "--drop-missing-year" if DROP_MISSING_YEAR else "",
+    shell:
+        r"""
+        set -euo pipefail
+        mkdir -p $(dirname {output.fasta})
+        python scripts/04_nextstrain/subsample_and_clean.py \
+          --fasta-in {input.fasta} \
+          --meta-in {input.meta} \
+          --fasta-out {output.fasta} \
+          --meta-out {output.meta} \
+          --subsample {params.subsample} \
+          {params.per_year_flag} \
+          --year-col {params.year_col} \
+          {params.drop_year_flag} \
+          --seed {params.seed}
+        """

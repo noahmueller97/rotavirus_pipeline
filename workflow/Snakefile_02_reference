@@ -1,0 +1,182 @@
+# ------------------------------------------------------------
+# Rotavirus analysis pipeline – Phase 2: Reference expansion
+# ------------------------------------------------------------
+#
+# This stage analyzes sequences that could not be assigned to a
+# rotavirus genome segment during the initial DIAMOND annotation.
+#
+# The workflow extracts these "unknown" sequences and clusters
+# them using MMseqs2 in two rounds to identify groups of related
+# sequences. Representative sequences from the clusters are then
+# selected and used to retrieve candidate coding sequences (CDS)
+# from NCBI.
+#
+# The goal of this stage is to identify potential new reference
+# sequences that can improve the segment annotation database.
+#
+# Outputs include:
+#   - FASTA file of unknown sequences
+#   - MMseqs clustering results
+#   - cluster size summaries
+#   - representative sequence lists
+#   - candidate CDS sequences and YAML snippets for reference updates
+#
+# This step was mainly used during development to expand the
+# reference set and may not need to be rerun once a stable
+# reference database has been established.
+# ------------------------------------------------------------
+
+
+
+EMAIL = "noah.mueller@stud.unibas.ch"
+
+rule all:
+    input:
+        "results/01_unknowns/diamond_unknowns.fasta",
+        "results/01_unknowns/mmseqs_unknowns_round1/unk1_cluster.tsv",
+        "results/01_unknowns/mmseqs_unknowns_round2/unk2_cluster.tsv",
+        "results/01_unknowns/unknown_cluster_sizes_round2.tsv",
+        "results/01_unknowns/alt_representatives_round2.tsv",
+        "results/01_unknowns/top10_reps_cds.tsv",
+        "results/01_unknowns/top10_reps_yaml_snippet.yml",
+        "results/01_unknowns/.done"
+
+rule extract_unknowns_fasta:
+    input:
+        "results/annotated_genbank.ndjson"
+    output:
+        "results/01_unknowns/diamond_unknowns.fasta"
+    shell:
+        r"""
+        set -euo pipefail
+        python scripts/02_reference_expansion/extract_fasta_of_unknowns.py \
+          --infile {input} \
+          --outfasta {output}
+        """
+
+# ---- Round 1 clustering: cluster unknowns fasta
+# mmseqs easy-cluster outputs:
+#   <prefix>_cluster.tsv
+#   <prefix>_rep_seq.fasta
+#   <prefix>_all_seqs.fasta
+
+rule mmseqs_round1:
+    input:
+        "results/01_unknowns/diamond_unknowns.fasta"
+    output:
+        cluster="results/01_unknowns/mmseqs_unknowns_round1/unk1_cluster.tsv",
+        rep_fasta="results/01_unknowns/mmseqs_unknowns_round1/unk1_rep_seq.fasta"
+    params:
+        outdir="results/01_unknowns/mmseqs_unknowns_round1",
+        prefix="results/01_unknowns/mmseqs_unknowns_round1/unk1",
+        tmp="results/01_unknowns/mmseqs_unknowns_round1/tmp",
+        min_id="0.70",
+        cov="0.80",
+        covmode="1"
+    shell:
+        r"""
+        set -euo pipefail
+        mkdir -p {params.outdir}
+
+        mmseqs easy-cluster \
+          {input} \
+          {params.prefix} \
+          {params.tmp} \
+          --min-seq-id {params.min_id} \
+          -c {params.cov} \
+          --cov-mode {params.covmode}
+
+        test -s {output.cluster}
+        test -s {output.rep_fasta}
+        """
+
+# ---- Round 2 clustering: cluster only the representatives from round1
+rule mmseqs_round2:
+    input:
+        "results/01_unknowns/mmseqs_unknowns_round1/unk1_rep_seq.fasta"
+    output:
+        cluster="results/01_unknowns/mmseqs_unknowns_round2/unk2_cluster.tsv",
+        rep_fasta="results/01_unknowns/mmseqs_unknowns_round2/unk2_rep_seq.fasta"
+    params:
+        outdir="results/01_unknowns/mmseqs_unknowns_round2",
+        prefix="results/01_unknowns/mmseqs_unknowns_round2/unk2",
+        tmp="results/01_unknowns/mmseqs_unknowns_round2/tmp",
+        min_id="0.85",
+        cov="0.80",
+        covmode="1"
+    shell:
+        r"""
+        set -euo pipefail
+        mkdir -p {params.outdir}
+
+        mmseqs easy-cluster \
+          {input} \
+          {params.prefix} \
+          {params.tmp} \
+          --min-seq-id {params.min_id} \
+          -c {params.cov} \
+          --cov-mode {params.covmode}
+
+        test -s {output.cluster}
+        test -s {output.rep_fasta}
+        """
+
+rule export_cluster_sizes:
+    input:
+        "results/01_unknowns/mmseqs_unknowns_round2/unk2_cluster.tsv"
+    output:
+        "results/01_unknowns/unknown_cluster_sizes_round2.tsv"
+    shell:
+        r"""
+        set -euo pipefail
+        python scripts/02_reference_expansion/export_top_clusters.py \
+          --cluster-tsv {input} \
+          --out {output}
+        """
+
+rule pick_alt_reps:
+    input:
+        cluster="results/01_unknowns/mmseqs_unknowns_round2/unk2_cluster.tsv",
+        fasta="results/01_unknowns/diamond_unknowns.fasta"
+    output:
+        "results/01_unknowns/alt_representatives_round2.tsv"
+    shell:
+        r"""
+        set -euo pipefail
+        python scripts/02_reference_expansion/pick_alt_representatives.py \
+          --cluster-tsv {input.cluster} \
+          --fasta {input.fasta} \
+          --top 20 \
+          --out {output}
+        """
+
+rule batch_get_best_cds:
+    output:
+        tsv="results/01_unknowns/top10_reps_cds.tsv",
+        yml="results/01_unknowns/top10_reps_yaml_snippet.yml"
+    shell:
+        rf"""
+        set -euo pipefail
+        mkdir -p results/01_unknowns
+        python scripts/02_reference_expansion/batch_get_best_cds.py \
+          --email {EMAIL} \
+          --outdir results/01_unknowns
+        test -s {output.tsv}
+        test -s {output.yml}
+        """
+
+rule done:
+    input:
+        "results/01_unknowns/diamond_unknowns.fasta",
+        "results/01_unknowns/mmseqs_unknowns_round2/unk2_cluster.tsv",
+        "results/01_unknowns/unknown_cluster_sizes_round2.tsv",
+        "results/01_unknowns/alt_representatives_round2.tsv",
+        "results/01_unknowns/top10_reps_cds.tsv",
+        "results/01_unknowns/top10_reps_yaml_snippet.yml"
+    output:
+        "results/01_unknowns/.done"
+    shell:
+        r"""
+        set -euo pipefail
+        touch {output}
+        """

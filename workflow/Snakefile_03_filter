@@ -1,0 +1,65 @@
+# ------------------------------------------------------------
+# Rotavirus analysis pipeline – Phase 3: Dataset filtering
+# ------------------------------------------------------------
+#
+# This stage prepares the datasets for downstream phylogenetic
+# analysis by computing sequence length statistics and filtering
+# sequences accordingly.
+#
+# The workflow performs three main steps:
+#
+# 1. Generate sequence length histograms for each dataset
+#    (useful for exploratory analysis and quality assessment).
+#
+# 2. Compute summary statistics of sequence lengths per
+#    species and genome segment.
+#
+# 3. Filter datasets based on these statistics in order to
+#    remove sequences that are substantially shorter than the
+#    typical segment length.
+#
+# ------------------------------------------------------------
+
+rule all:
+    input:
+        "results/03_nextstrain/.histograms_done",
+        "results/03_nextstrain/.length_stats_done",
+        "results/03_nextstrain/.filtered_done"
+
+
+rule make_histograms:
+    output:
+        done="results/03_nextstrain/.histograms_done"
+    shell:
+        r"""
+        set -euo pipefail
+        python scripts/04_nextstrain/make_histograms.py
+        mkdir -p results/03_nextstrain
+        touch {output.done}
+        """
+
+
+rule make_length_stats:
+    output:
+        done="results/03_nextstrain/.length_stats_done"
+    shell:
+        r"""
+        set -euo pipefail
+        python scripts/04_nextstrain/make_length_stats.py
+        mkdir -p results/03_nextstrain
+        touch {output.done}
+        """
+
+
+rule filter_datasets_by_length_stats:
+    input:
+        "results/03_nextstrain/.length_stats_done"
+    output:
+        done="results/03_nextstrain/.filtered_done"
+    shell:
+        r"""
+        set -euo pipefail
+        python scripts/04_nextstrain/filter_datasets_by_length_stats.py
+        mkdir -p results/03_nextstrain
+        touch {output.done}
+        """

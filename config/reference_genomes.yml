@@ -1,0 +1,945 @@
+reference_genomes:
+# Rotavirus A
+  - strain: RotavirusA_GCF_000880735.1
+    virus_type: rotavirus
+    species: A
+    assembly: GCF_000880735.1
+    segments:
+      # segment 1 → VP1
+      - name: vp1
+        nucleotide_accession: NC_011507.2
+        protein_accession: YP_002302227.1
+
+      # segment 2 → VP2
+      - name: vp2
+        nucleotide_accession: NC_011506.2
+        protein_accession: YP_002302226.1
+
+      # segment 3 → VP3
+      - name: vp3
+        nucleotide_accession: NC_011508.2
+        protein_accession: YP_002302228.1
+
+      # segment 4 → VP4
+      - name: vp4
+        nucleotide_accession: NC_011510.2
+        protein_accession: YP_002302230.1
+
+      # segment 5 → NSP1
+      - name: nsp1
+        nucleotide_accession: NC_011500.2
+        protein_accession: YP_002302219.1
+
+      # segment 6 → VP6
+      - name: vp6
+        nucleotide_accession: NC_011509.2
+        protein_accession: YP_002302229.1
+
+      # segment 7 → NSP3
+      - name: nsp3
+        nucleotide_accession: NC_011501.2
+        protein_accession: YP_002302220.1
+
+      # segment 8 → NSP2
+      - name: nsp2
+        nucleotide_accession: NC_011502.2
+        protein_accession: YP_002302221.1
+
+      # segment 9 → VP7
+      - name: vp7
+        nucleotide_accession: NC_011503.2
+        protein_accession: YP_002302222.1
+
+      # segment 10 → NSP4
+      - name: nsp4
+        nucleotide_accession: NC_011504.2
+        protein_accession: YP_002302223.1
+
+      # segment 11 → NSP5 (NSP6 optional)
+      - name: nsp5
+        nucleotide_accession: NC_011505.2
+        protein_accession: YP_002302224.1
+        # optional: NSP6 = YP_002302225.1
+
+# Rotavirus C
+  - strain: RotavirusC_GCF_000864225.1
+    virus_type: rotavirus
+    species: C
+    assembly: GCF_000864225.1
+    segments:
+      # segment 1 → VP1
+      - name: vp1
+        nucleotide_accession: NC_007547.1
+        protein_accession: YP_392464.1
+
+      # segment 2 → VP2
+      - name: vp2
+        nucleotide_accession: NC_007546.1
+        protein_accession: YP_392489.1
+
+      # segment 3 → VP3
+      - name: vp3
+        nucleotide_accession: NC_007572.1
+        protein_accession: YP_392514.1
+
+      # segment 4 → VP4
+      - name: vp4
+        nucleotide_accession: NC_007574.1
+        protein_accession: YP_392516.1
+
+      # segment 5 → NSP1
+      - name: nsp1
+        nucleotide_accession: NC_007570.1
+        protein_accession: YP_392512.1
+
+      # segment 6 → VP6
+      - name: vp6
+        nucleotide_accession: NC_007543.1
+        protein_accession: YP_392486.1
+
+      # segment 7 → NSP3
+      - name: nsp3
+        nucleotide_accession: NC_007544.1
+        protein_accession: YP_392487.1
+
+      # segment 8 → NSP2
+      - name: nsp2
+        nucleotide_accession: NC_007571.1
+        protein_accession: YP_392513.1
+
+      # segment 9 → VP7
+      - name: vp7
+        nucleotide_accession: NC_007545.1
+        protein_accession: YP_392488.1
+
+      # segment 10 → NSP4
+      - name: nsp4
+        nucleotide_accession: NC_007569.1
+        protein_accession: YP_392511.1
+
+      # segment 11 → NSP5
+      - name: nsp5
+        nucleotide_accession: NC_007573.1
+        protein_accession: YP_392515.1
+
+# Rotavirus B  
+  - strain: HumanRotavirusB_GCF_000907835.1
+    virus_type: rotavirus
+    species: B
+    assembly: GCF_000907835.1
+    segments:
+      # segment 1 → VP1
+      - name: vp1
+        nucleotide_accession: NC_021541.1
+        protein_accession: YP_008126843.1
+
+      # segment 2 → VP2
+      - name: vp2
+        nucleotide_accession: NC_021545.1
+        protein_accession: YP_008126847.1
+
+      # segment 3 → VP3
+      - name: vp3
+        nucleotide_accession: NC_021551.1
+        protein_accession: YP_008126855.1
+
+      # segment 4 → VP4
+      - name: vp4
+        nucleotide_accession: NC_021543.1
+        protein_accession: YP_008126845.1
+
+      # segment 5 → NSP1 (multiple proteins encoded)
+      - name: nsp1
+        nucleotide_accession: NC_021546.1
+        protein_accession: YP_008126848.1
+        # also encodes: YP_008126849.1, YP_008126850.1
+
+      # segment 6 → VP6
+      - name: vp6
+        nucleotide_accession: NC_021544.1
+        protein_accession: YP_008126846.1
+
+      # segment 7 → NSP3
+      - name: nsp3
+        nucleotide_accession: NC_021547.1
+        protein_accession: YP_008126851.1
+
+      # segment 8 → NSP2
+      - name: nsp2
+        nucleotide_accession: NC_021548.1
+        protein_accession: YP_008126852.1
+
+      # segment 9 → VP7
+      - name: vp7
+        nucleotide_accession: NC_021542.1
+        protein_accession: YP_008126844.1
+
+      # segment 10 → NSP4
+      - name: nsp4
+        nucleotide_accession: NC_021550.1
+        protein_accession: YP_008126854.1
+
+      # segment 11 → NSP5
+      - name: nsp5
+        nucleotide_accession: NC_021549.1
+        protein_accession: YP_008126853.1
+
+# Rotavirus D
+  - strain: RotavirusD_chicken_05V0049_DEU_2005
+    virus_type: rotavirus
+    species: D
+    assembly: GCF_000890155.1
+    host: Gallus gallus
+    country: Germany
+    collection_year: 2005
+    segments:
+      # segment 1 → VP1
+      - name: vp1
+        nucleotide_accession: NC_014511.1
+        protein_accession: YP_003896046.1
+
+      # segment 2 → VP2
+      - name: vp2
+        nucleotide_accession: NC_014512.1
+        protein_accession: YP_003896047.1
+
+      # segment 3 → VP3
+      - name: vp3
+        nucleotide_accession: NC_014513.1
+        protein_accession: YP_003896048.1
+
+      # segment 4 → VP4
+      - name: vp4
+        nucleotide_accession: NC_014514.1
+        protein_accession: YP_003896049.1
+
+      # segment 5 → NSP1
+      - name: nsp1
+        nucleotide_accession: NC_014515.1
+        protein_accession: YP_003896050.1
+
+      # segment 6 → VP6
+      - name: vp6
+        nucleotide_accession: NC_014516.1
+        protein_accession: YP_003896051.1
+
+      # segment 7 → NSP3
+      - name: nsp3
+        nucleotide_accession: NC_014517.1
+        protein_accession: YP_003896052.1
+
+      # segment 8 → NSP2
+      - name: nsp2
+        nucleotide_accession: NC_014518.1
+        protein_accession: YP_003896053.1
+
+      # segment 9 → VP7
+      - name: vp7
+        nucleotide_accession: NC_014519.1
+        protein_accession: YP_003896054.1
+
+      # segment 10 → NSP4
+      - name: nsp4
+        nucleotide_accession: NC_014520.1
+        protein_accession: YP_003896055.1
+        # note: YP_003896056.1 also listed for segment 10 on NCBI
+
+      # segment 11 → NSP5
+      - name: nsp5
+        nucleotide_accession: NC_014521.1
+        protein_accession: YP_003896057.1
+        
+# Rotavirus F
+  - strain: RotavirusF_chicken_03V0568_DEU_2003
+    virus_type: rotavirus
+    species: F
+    assembly: GCF_000910335.1
+    host: Gallus gallus
+    country: Germany
+    collection_year: 2003
+    segments:
+      # segment 1 → VP1
+      - name: vp1
+        nucleotide_accession: NC_021625.1
+        protein_accession: YP_008145313.1
+
+      # segment 2 → VP2
+      - name: vp2
+        nucleotide_accession: NC_021626.1
+        protein_accession: YP_008145314.1
+
+      # segment 3 → VP3
+      - name: vp3
+        nucleotide_accession: NC_021631.1
+        protein_accession: YP_008145319.1
+
+      # segment 4 → VP4
+      - name: vp4
+        nucleotide_accession: NC_021630.1
+        protein_accession: YP_008145318.1
+
+      # segment 5 → NSP1
+      - name: nsp1
+        nucleotide_accession: NC_021632.1
+        protein_accession: YP_008145320.1
+
+      # segment 6 → VP6
+      - name: vp6
+        nucleotide_accession: NC_021635.1
+        protein_accession: YP_008145323.1
+
+      # segment 7 → NSP3
+      - name: nsp3
+        nucleotide_accession: NC_021633.1
+        protein_accession: YP_008145321.1
+
+      # segment 8 → NSP2
+      - name: nsp2
+        nucleotide_accession: NC_021628.1
+        protein_accession: YP_008145316.1
+
+      # segment 9 → VP7
+      - name: vp7
+        nucleotide_accession: NC_021627.1
+        protein_accession: YP_008145315.1
+
+      # segment 10 → NSP4
+      - name: nsp4
+        nucleotide_accession: NC_021629.1
+        protein_accession: YP_008145317.1
+
+      # segment 11 → NSP5
+      - name: nsp5
+        nucleotide_accession: NC_021634.1
+        protein_accession: YP_008145322.1
+
+# Rotavirus Bat
+  - strain: Bat_rotavirus_Rousettus_aegyptiacus_Kenya_2015
+    virus_type: rotavirus
+    species: bat
+    assembly: GCF_004117615.1
+    host: Rousettus aegyptiacus
+    country: Kenya
+    collection_year: 2015
+    segments:
+      # segment 1 → VP1
+      - name: vp1
+        nucleotide_accession: NC_040414.1
+        protein_accession: YP_009551540.1
+
+      # segment 2 → VP2
+      - name: vp2
+        nucleotide_accession: NC_040413.1
+        protein_accession: YP_009551539.1
+
+      # segment 3 → VP3
+      - name: vp3
+        nucleotide_accession: NC_040408.1
+        protein_accession: YP_009551534.1
+
+      # segment 4 → VP4
+      - name: vp4
+        nucleotide_accession: NC_040409.1
+        protein_accession: YP_009551535.1
+
+      # segment 5 → NSP1
+      - name: nsp1
+        nucleotide_accession: NC_040410.1
+        protein_accession: YP_009551536.1
+
+      # segment 6 → VP6
+      - name: vp6
+        nucleotide_accession: NC_040411.1
+        protein_accession: YP_009551537.1
+
+      # segment 7 → NSP3
+      - name: nsp3
+        nucleotide_accession: NC_040405.1
+        protein_accession: YP_009551531.1
+
+      # segment 8 → NSP2
+      - name: nsp2
+        nucleotide_accession: NC_040406.1
+        protein_accession: YP_009551532.1
+
+      # segment 9 → VP7
+      - name: vp7
+        nucleotide_accession: NC_040412.1
+        protein_accession: YP_009551538.1
+
+      # segment 10 → NSP4
+      - name: nsp4
+        nucleotide_accession: NC_040415.1
+        protein_accession: YP_009551541.1
+
+      # segment 11 → NSP5
+      - name: nsp5
+        nucleotide_accession: NC_040407.1
+        protein_accession: YP_009551533.1
+
+# Rotavirus J
+  - strain: RotavirusJ_GCF_013086085.1
+    virus_type: rotavirus
+    species: J
+    assembly: GCF_013086085.1
+    host: Miniopterus schreibersii
+    tissue: feces
+    segments:
+      # segment 1 → VP1
+      - name: vp1
+        nucleotide_accession: NC_055268.1
+        protein_accession: YP_010086029.1
+
+      # segment 2 → VP2
+      - name: vp2
+        nucleotide_accession: NC_055265.1
+        protein_accession: YP_010086026.1
+
+      # segment 3 → VP3
+      - name: vp3
+        nucleotide_accession: NC_055269.1
+        protein_accession: YP_010086030.1
+
+      # segment 4 → VP4
+      - name: vp4
+        nucleotide_accession: NC_055264.1
+        protein_accession: YP_010086025.1
+
+      # segment 5 → NSP1
+      - name: nsp1
+        nucleotide_accession: NC_055270.1
+        protein_accession: YP_010086031.1
+
+      # segment 6 → VP6
+      - name: vp6
+        nucleotide_accession: NC_055271.1
+        protein_accession: YP_010086032.1
+
+      # segment 7 → NSP3
+      - name: nsp3
+        nucleotide_accession: NC_055272.1
+        protein_accession: YP_010086034.1
+
+      # segment 8 → NSP2
+      - name: nsp2
+        nucleotide_accession: NC_055266.1
+        protein_accession: YP_010086027.1
+
+      # segment 9 → VP7
+      - name: vp7
+        nucleotide_accession: NC_055267.1
+        protein_accession: YP_010086028.1
+
+      # segment 10 → NSP4
+      - name: nsp4
+        nucleotide_accession: NC_055263.1
+        protein_accession: YP_010086024.1
+
+      # segment 11 → NSP5
+      - name: nsp5
+        nucleotide_accession: NC_055273.1
+        protein_accession: YP_010086035.1  # second NSP5 protein exists;
+
+# Rotvirus G -> not annotated but can be seen if clicked
+  - strain: RotavirusG_GCF_001343825.1
+    virus_type: rotavirus
+    species: G
+    assembly: GCF_001343825.1
+    segments:
+      # segment 1 → VP1
+      - name: vp1
+        nucleotide_accession: NC_021590.1
+        protein_accession: YP_008136242.1
+
+      # segment 2 → VP2
+      - name: vp2
+        nucleotide_accession: NC_021580.1
+        protein_accession: YP_008136231.1
+
+      # segment 3 → VP3
+      - name: vp3
+        nucleotide_accession: NC_021581.1
+        protein_accession: YP_008136232.1
+
+      # segment 4 → VP4
+      - name: vp4
+        nucleotide_accession: NC_021589.1
+        protein_accession: YP_008136241.1
+
+      # segment 5 → NSP1 (multiple proteins encoded)
+      - name: nsp1
+        nucleotide_accession: NC_021583.1
+        protein_accession: YP_008136234.1
+        # also encodes: YP_008136235.1
+
+      # segment 6 → VP6
+      - name: vp6
+        nucleotide_accession: NC_021588.1
+        protein_accession: YP_008136240.1
+
+      # segment 7 → NSP3
+      - name: nsp3
+        nucleotide_accession: NC_021585.1
+        protein_accession: YP_008136237.1
+
+      # segment 8 → NSP2
+      - name: nsp2
+        nucleotide_accession: NC_021584.1
+        protein_accession: YP_008136236.1
+
+      # segment 9 → VP7
+      - name: vp7
+        nucleotide_accession: NC_021582.1
+        protein_accession: YP_008136233.1
+
+      # segment 10 → NSP4
+      - name: nsp4
+        nucleotide_accession: NC_021586.1
+        protein_accession: YP_008136238.1
+
+      # segment 11 → NSP5
+      - name: nsp5
+        nucleotide_accession: NC_021587.1
+        protein_accession: YP_008136239.1
+# Rotavirus L -> not annotated but can be seen if clicked
+  - strain: RotavirusL_GCF_051050695.1
+    virus_type: rotavirus
+    species: L
+    assembly: GCF_051050695.1
+    segments:
+      # segment 1
+      - name: vp1
+        nucleotide_accession: NC_135600.1
+        protein_accession: YP_013607744.1
+
+      # segment 2
+      - name: vp2
+        nucleotide_accession: NC_135601.1
+        protein_accession: YP_013607745.1
+
+      # segment 3
+      - name: vp3
+        nucleotide_accession: NC_135602.1
+        protein_accession: YP_013607746.1
+
+      # segment 4
+      - name: vp4
+        nucleotide_accession: NC_135603.1
+        protein_accession: YP_013607747.1
+
+      # segment 5
+      - name: nsp1
+        nucleotide_accession: NC_135604.1
+        protein_accession: YP_013607748.1
+
+      # segment 6
+      - name: vp6
+        nucleotide_accession: NC_135605.1
+        protein_accession: YP_013607749.1
+
+      # segment 7
+      - name: nsp3
+        nucleotide_accession: NC_135606.1
+        protein_accession: YP_013607750.1
+
+      # segment 8
+      - name: nsp2
+        nucleotide_accession: NC_135607.1
+        protein_accession: YP_013607751.1
+
+      # segment 9
+      - name: vp7
+        nucleotide_accession: NC_135608.1
+        protein_accession: YP_013607752.1
+
+      # segment 10
+      - name: nsp4
+        nucleotide_accession: NC_135609.1
+        protein_accession: YP_013607753.1
+
+      # segment 11
+      - name: nsp5
+        nucleotide_accession: NC_135610.1
+        protein_accession: YP_013607754.1
+
+# Rotavirus I -> not annotated but can be seen if clicked and scrolled down to documentation
+  - strain: RotavirusI_GCF_000973395.3
+    virus_type: rotavirus
+    species: I
+    assembly: GCF_000973395.3
+    host: Canis lupus familiaris
+    country: Hungary
+    segments:
+      # segment 1 → VP1
+      - name: vp1
+        nucleotide_accession: NC_026825.2
+        protein_accession: YP_009130674.1
+
+      # segment 2 → VP2
+      - name: vp2
+        nucleotide_accession: NC_026826.2
+        protein_accession: YP_009130675.1
+
+      # segment 3 → VP3
+      - name: vp3
+        nucleotide_accession: NC_026827.2
+        protein_accession: YP_009130676.1
+
+      # segment 4 → VP4
+      - name: vp4
+        nucleotide_accession: NC_026828.2
+        protein_accession: YP_009130677.1
+
+      # segment 5 → NSP1 (multiple proteins encoded)
+      - name: nsp1
+        nucleotide_accession: NC_026820.2
+        protein_accession: YP_009130668.1
+        # also encodes: YP_009130669.1
+
+      # segment 6 → VP6
+      - name: vp6
+        nucleotide_accession: NC_026829.2
+        protein_accession: YP_009130678.1
+
+      # segment 7 → NSP3
+      - name: nsp3
+        nucleotide_accession: NC_026822.2
+        protein_accession: YP_009130671.1
+
+      # segment 8 → NSP2
+      - name: nsp2
+        nucleotide_accession: NC_026821.2
+        protein_accession: YP_009130670.1
+
+      # segment 9 → VP7
+      - name: vp7
+        nucleotide_accession: NC_026830.2
+        protein_accession: YP_009130679.1
+
+      # segment 10 → NSP4
+      - name: nsp4
+        nucleotide_accession: NC_026823.2
+        protein_accession: YP_009130672.1
+
+      # segment 11 → NSP5
+      - name: nsp5
+        nucleotide_accession: NC_026824.2
+        protein_accession: YP_009130673.1
+
+# Rotavirus Adults -> not annotated but can be seen if clicked and scrolled down to documentation
+  - strain: AdultDiarrhealRotavirus_GCF_000864245.1
+    virus_type: rotavirus
+    species: unknown
+    assembly: GCF_000864245.1
+    segments:
+      # segment 1
+      - name: vp1
+        nucleotide_accession: NC_007548.1
+        protein_accession: YP_392490.1
+
+      # segment 2
+      - name: vp2
+        nucleotide_accession: NC_007549.1
+        protein_accession: YP_392491.1
+
+      # segment 3  (was 4th in the list)
+      - name: vp3
+        nucleotide_accession: NC_007550.1
+        protein_accession: YP_392492.1
+
+      # segment 4  (was 3rd in the list)
+      - name: vp4
+        nucleotide_accession: NC_007551.1
+        protein_accession: YP_392493.1
+
+      # segment 5
+      - name: nsp1
+        nucleotide_accession: NC_007552.1
+        protein_accession: YP_392494.1
+
+      # segment 6
+      - name: vp6
+        nucleotide_accession: NC_007553.1
+        protein_accession: YP_392495.1
+
+      # segment 7  (was 8th in the list)
+      - name: nsp3
+        nucleotide_accession: NC_007554.1
+        protein_accession: YP_392496.1
+
+      # segment 8  (was 7th in the list)
+      - name: nsp2
+        nucleotide_accession: NC_007555.1
+        protein_accession: YP_392497.1
+
+      # segment 9
+      - name: vp7
+        nucleotide_accession: NC_007556.1
+        protein_accession: YP_392498.1
+
+      # segment 10
+      - name: nsp4
+        nucleotide_accession: NC_007557.1
+        protein_accession: YP_392499.1
+
+      # segment 11
+      - name: nsp5
+        nucleotide_accession: NC_007558.1
+        protein_accession: YP_392500.1
+
+
+# Rotavirus K -> not annotated but can be inferred from the genes
+  - strain: RotavirusK_GCF_051049655.1
+    virus_type: rotavirus
+    species: K
+    assembly: GCF_051049655.1
+    host: Sorex araneus
+    country: Germany
+    segments:
+      # segment 1 → VP1
+      - name: vp1
+        nucleotide_accession: NC_135466.1
+        protein_accession: YP_013607590.1
+
+      # segment 2 → VP2
+      - name: vp2
+        nucleotide_accession: NC_135467.1
+        protein_accession: YP_013607591.1
+
+      # segment 3 → VP3
+      - name: vp3
+        nucleotide_accession: NC_135468.1
+        protein_accession: YP_013607592.1
+
+      # segment 4 → VP4
+      - name: vp4
+        nucleotide_accession: NC_135469.1
+        protein_accession: YP_013607593.1
+
+      # segment 5 → NSP1
+      - name: nsp1
+        nucleotide_accession: NC_135470.1
+        protein_accession: YP_013607594.1
+
+      # segment 6 → VP6
+      - name: vp6
+        nucleotide_accession: NC_135471.1
+        protein_accession: YP_013607595.1
+
+      # segment 7 → NSP3
+      - name: nsp3
+        nucleotide_accession: NC_135472.1
+        protein_accession: YP_013607596.1
+
+      # segment 8 → NSP2
+      - name: nsp2
+        nucleotide_accession: NC_135473.1
+        protein_accession: YP_013607597.1
+
+      # segment 9 → VP7
+      - name: vp7
+        nucleotide_accession: NC_135474.1
+        protein_accession: YP_013607598.1
+
+      # segment 10 → NSP4
+      - name: nsp4
+        nucleotide_accession: NC_135475.1
+        protein_accession: YP_013607599.1
+
+      # segment 11 → NSP5 (± NSP6)
+      - name: nsp5
+        nucleotide_accession: NC_135476.1
+        protein_accession: YP_013607600.1
+
+# Additional References after Clustering
+
+  - strain: RVA_Human_wt_CMR_CMRHP55_2014_G1P8
+    virus_type: rotavirus
+    species: A
+    isolate: CMRHP55
+    country: Cameroon
+    collection_year: 2014
+    segments:
+      - name: vp1
+        nucleotide_accession: MH933782.1
+      - name: vp2
+        nucleotide_accession: MH933783.1
+      - name: vp3
+        nucleotide_accession: MH933784.1
+      - name: vp4
+        nucleotide_accession: MH933785.1
+      - name: vp6
+        nucleotide_accession: MH933786.1
+      - name: vp7
+        nucleotide_accession: MH933787.1
+      - name: nsp1
+        nucleotide_accession: MH933788.1
+      - name: nsp2
+        nucleotide_accession: MH933789.1
+      - name: nsp4
+        nucleotide_accession: MH933790.1
+      - name: nsp5
+        nucleotide_accession: MH933791.1
+
+
+
+  - strain: RotavirusA_LBN_N568_2013_G3P6
+    virus_type: rotavirus
+    species: A
+    host: Homo sapiens
+    country: Lebanon
+    collection_year: 2013
+    genotype: "G3P[6]"
+    segments:
+      - name: vp1
+        nucleotide_accession: MN029137.1
+      - name: vp2
+        nucleotide_accession: MN029138.1
+      - name: vp3
+        nucleotide_accession: MN029139.1
+      - name: vp4
+        nucleotide_accession: MN029140.1
+      - name: vp6
+        nucleotide_accession: MN029141.1
+      - name: vp7
+        nucleotide_accession: MN029142.1
+      - name: nsp1
+        nucleotide_accession: MN029132.1
+      - name: nsp2
+        nucleotide_accession: MN029133.1
+      - name: nsp3
+        nucleotide_accession: MN029134.1
+      - name: nsp4
+        nucleotide_accession: MN029135.1
+      - name: nsp5
+        nucleotide_accession: MN029136.1   #"NSP5 and NSP6" in GenBank
+
+  - strain: RotavirusA_Sz-BA0301/2021/G9P[8]
+    virus_type: rotavirus
+    species: A
+    genotype: G9P[8]
+    collection_year: 2021
+    segments:
+      - name: vp1
+        nucleotide_accession: PV942880.1
+
+      - name: vp2
+        nucleotide_accession: PV942937.1
+
+      - name: vp3
+        nucleotide_accession: PV942992.1
+
+      - name: vp4
+        nucleotide_accession: PV948640.1
+
+      - name: vp6
+        nucleotide_accession: PV948640.1
+
+      - name: vp7
+        nucleotide_accession: PV943211.1
+
+      - name: nsp1
+        nucleotide_accession: PV948585.1
+
+      - name: nsp2
+        nucleotide_accession: PV943156.1
+
+      - name: nsp3
+        nucleotide_accession: PV943100.1
+
+      - name: nsp4
+        nucleotide_accession: PV943268.1
+
+      - name: nsp5
+        nucleotide_accession: PV943321.1
+
+
+
+
+  - strain: "557/2017"
+    virus_type: "rotavirus"
+    species: "A"
+    segments:
+      - name: vp1
+        nucleotide_accession: MN206128.1
+      - name: vp2
+        nucleotide_accession: MN206129.1
+      - name: vp3
+        nucleotide_accession: MN206130.1
+      - name: vp4
+        nucleotide_accession: MN206131.1
+      - name: vp6
+        nucleotide_accession: MN206132.1
+      - name: vp7
+        nucleotide_accession: MN206133.1
+      - name: nsp1
+        nucleotide_accession: MN206134.1
+      - name: nsp2
+        nucleotide_accession: MN206135.1
+      - name: nsp3
+        nucleotide_accession: MN206136.1
+      - name: nsp4
+        nucleotide_accession: MN206138.1
+      - name: nsp5
+        nucleotide_accession: MN206137.1
+
+
+
+  - strain: Bovine_rotavirus_N3
+    virus_type: rotavirus
+    species: A
+    host: Bos taurus
+    segments:
+      - name: vp1
+        nucleotide_accession: PV938341.1
+      - name: vp2
+        nucleotide_accession: PV938342.1
+      - name: vp3
+        nucleotide_accession: PV938343.1
+      - name: vp4
+        nucleotide_accession: PV938344.1
+      - name: nsp1
+        nucleotide_accession: PV938345.1
+      - name: vp6
+        nucleotide_accession: PV938346.1
+      - name: nsp3
+        nucleotide_accession: PV938347.1
+      - name: vp7
+        nucleotide_accession: PV938348.1
+      - name: nsp2
+        nucleotide_accession: PV938349.1
+      - name: nsp4
+        nucleotide_accession: PV938350.1
+      - name: nsp5
+        nucleotide_accession: PV938351.1
+
+  - strain: RVA_Human-wt_LBN_N566_2013_G3P6
+    virus_type: rotavirus
+    species: A
+    host: Homo sapiens
+    country: Lebanon
+    collection_year: 2013
+    genotype: "G3P[6]"
+    segments:
+      - name: vp1
+        nucleotide_accession: MN029126.1
+      - name: vp2
+        nucleotide_accession: MN029127.1
+      - name: vp3
+        nucleotide_accession: MN029128.1
+      - name: vp4
+        nucleotide_accession: MN029129.1
+      - name: vp6
+        nucleotide_accession: MN029130.1
+      - name: vp7
+        nucleotide_accession: MN029131.1
+      - name: nsp1
+        nucleotide_accession: MN029121.1
+      - name: nsp2
+        nucleotide_accession: MN029122.1
+      - name: nsp3
+        nucleotide_accession: MN029123.1
+      - name: nsp4
+        nucleotide_accession: MN029124.1
+      - name: nsp5
+        nucleotide_accession: MN029125.1   # NSP5 + NSP6 in GenBank
